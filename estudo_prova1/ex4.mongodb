@@ -1,0 +1,7 @@
+// Exercício 4: Regex Básico (Início de String)
+// Com base nos dados dos nossos alunos (Igor, Manoel, Juliana e Fernanda), a secretaria precisa listar todos os alunos cujo nome comece com a letra "J".
+// Tarefa: Escreva uma consulta utilizando db.alunos.find() e o operador $regex para encontrar os alunos que possuem o nome iniciando em "J". Utilize o metacaractere ^ (que indica o início de uma string) no seu padrão.
+
+db.alunos.find(
+    {nome:{$regex:/^J/i}}
+)

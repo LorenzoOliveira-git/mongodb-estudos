@@ -1,0 +1,9 @@
+// Exercício 5: A coordenação precisa de uma lista de todas as disciplinas que terminam com o número romano "II" (como em "Desenvolvimento II"). Além disso, o resultado deve mostrar apenas os alunos que não possuem o sobrenome "Matos".
+
+db.alunos.find(
+    {$and:[
+        {disciplinas:{$elemMatch:{$regex:/II$/}}},
+        {sobrenome:{$nin:["Matos"]}}
+    ]}
+)
+

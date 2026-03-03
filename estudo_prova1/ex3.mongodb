@@ -1,0 +1,23 @@
+// Exercício 3: Manipulação de Arrays e Expressões Complexas
+// Vamos elevar o nível para testar seu conhecimento sobre Arrays e o operador $expr.
+// Cenário: A coordenação quer identificar alunos com perfil de monitoria.
+// Tarefa: Escreva uma query com find() para localizar alunos que atendam a todos os seguintes critérios:
+// Não estejam estagiando.
+// Tenham uma média (media) estritamente maior que 7.0.
+// Estejam matriculados em mais de 2 disciplinas (Dica: use o tamanho do array).
+// Possuam a disciplina "Análise de Dados" em sua lista de disciplinas.
+// Desafio extra: Tente retornar apenas os campos nome, media e disciplinas no resultado (projeção).
+
+db.alunos.find(
+    {$and:[
+        {estagio:false},
+        {media:{$gt:7}},
+        {$expr:{$gt:[{$size:"$disciplinas"},2]}},
+        {disciplinas:"Análise de Dados"}
+    ]},
+    {
+        nome:1,
+        media:1,
+        disciplinas:1
+    }
+)

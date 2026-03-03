@@ -1,0 +1,18 @@
+//Exercício 2: Atualização com Filtros e Campos Aninhados
+// Agora vamos treinar a parte de Update, exigindo atenção à estrutura dos documentos.
+// Cenário: Houve uma reforma administrativa na escola "Germinare Tech".
+// Tarefa: Escreva um comando utilizando updateMany() que identifique todos os alunos que atendam aos seguintes requisitos:
+// Pertençam à escola "Germinare Tech".
+// E que tenham a idade igual a 16 anos OU que já possuam o campo telefone cadastrado.
+// Ações de atualização:
+// Altere o nome do diretor para "Raul Moreira".
+// Adicione um novo campo chamado status com o valor "Matrícula Confirmada".
+// Corrija o erro de digitação do campo de professores, mudando o valor de qnt_professores (ou qnd_professores, conforme as fontes) para 4.
+
+db.alunos.updateMany(
+    {$and:[
+        {"escola.nome":"Germinare Tech"},
+        {$or:[{idade:16},{telefone:{$exists:true}}]}
+    ]},
+    {$set:{"escola.diretor":"Raul Moreira",status:"Matrícula Confirmada","escola.qnd_professores":4}}
+)

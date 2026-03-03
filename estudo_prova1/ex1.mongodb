@@ -1,0 +1,15 @@
+// Exercício 1: Filtros Avançados e Operadores Lógicos
+// Escreva uma query utilizando o método db.alunos.find() que retorne todos os alunos que atendam aos seguintes critérios simultaneamente:
+// Não pertençam às escolas "Germinare Vet" nem "Germinare Business".
+// Atendam a pelo menos uma das duas condições abaixo:
+// Possuam o campo telefone cadastrado no documento (independentemente do valor).
+// Estejam matriculados em mais de 3 disciplinas (utilize o operador de expressão para verificar o tamanho do array).
+// Dica: Você precisará combinar operadores como $nin (ou uma lógica de negação), $or, $exists e $expr com $gt e $size.
+// Envie sua proposta de sintaxe para que eu possa corrigir e passarmos para o próximo desafio!
+
+db.alunos.find(
+    {$and:[
+        {"escola.nome":{$nin:["Germinare Vet","Germinare Business"]}},
+        {$or:[{telefone:{$exists:true}},{$expr:{$gt:[{$size:"$disciplinas"},3]}}]}
+    ]}
+)

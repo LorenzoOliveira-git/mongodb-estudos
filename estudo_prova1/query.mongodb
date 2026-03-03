@@ -1,0 +1,65 @@
+db.alunos.insertMany([
+    {
+        nome:"Igor",
+        sobrenome:"José",
+        idade: 16,
+        matricula: 1023,
+        media: 7.5,
+        estagio: false,
+        data_matricula: new Date(25,0,2025),
+        escola:{
+            nome:"Germinare Vet",
+            diretor: "João Audi",
+            qnd_professores: 5
+        },
+        disciplinas: ["Matemática", "Análise de dados", "Banco de dados", "Estatística"]
+    },
+    {
+        nome:"Manoel",
+        sobrenome:"Carlos",
+        idade: 15,
+        matricula: 1024,
+        media: 6.5,
+        estagio: false,
+        data_matricula: new Date(1,1,2024),
+        escola:{
+            nome:"Germinare Business",
+            diretor: "Paulo Gualtiere",
+            qnd_professores: 10
+        },
+        disciplinas: ["Vendas", "Português", "Matemática"]
+    },
+    {
+        nome:"Juliana",
+        sobrenome:"Lima",
+        idade: 16,
+        matricula: 1019,
+        media: 7.8,
+        estagio: true,
+        data_matricula: new Date(24,0,2024),
+        escola:{
+            nome:"Germinare Tech",
+            diretor: "Anderson Chamon",
+            qnd_professores: 6
+        },
+        telefone:11911223344,
+        disciplinas: ["Lógica de Programação", "Análise de dados", "Desenvolvimento II"]
+    },
+    {
+        nome:"Fernanda",
+        sobrenome:"Matos",
+        idade: 16,
+        matricula: 1025,
+        media: 5.9,
+        estagio: true,
+        data_matricula: new Date(25,0,2024),
+        escola:{
+            nome:"Germinare Tech",
+            diretor: "Anderson Chamon",
+            qnd_professores: 6
+        },
+        telefone:"11999887766",
+        disciplinas: ["Banco de Dados", "Desenvolvimento I"]
+    }
+])
+
