@@ -1,0 +1,67 @@
+// Adiciona um novo item caso ele não exista no array.
+db.clientes.updateOne(
+    {nome:"Jucelio"},
+    {$addToSet:{emprestimo_tipo:"FGTS"}}
+)
+
+db.clientes.updateOne(
+    {nome:"Jucelio"},
+    {$push:{emprestimo_tipo:"FGTS"}}
+)
+
+// 1 significa apagar o último, e -1 é o primeiro item
+db.clientes.updateOne(
+    {nome:"Jucelio"},
+    {$pop:{emprestimo_tipo:1}}
+)
+
+db.clientes.updateOne(
+    {nome:"Jucelio"},
+)
+
+db.clientes.updateOne(
+    {nome:"Lamelo"},
+    {$addToSet:{emprestimo_tipo:{$each:["FGTS","Consignado","Pessoal","Garantia"]}}}
+)
+
+db.lista.insertOne(
+    {_id:1, vetor_num:[5,8,11,15,9], vetor_nome:["Maria","Carlos","Victor","Hugo","Yuri"]}
+)
+
+// Depois do que vem no fild é apenas modificadores, por isso o $each e o $position vão estar dentro do próprio documento.
+// O $each 
+db.lista.updateOne(
+    {_id:1},
+    {$push:{vetor_num:{$each:[10,3], $position:0}}}
+)
+
+// [ 'Maria', 'Carlos', 'Victor', 'Hugo', 'Yuri' ]
+
+db.lista.updateOne(
+    {_id:1},
+    {$push:{vetor_nome:{$each:["Gabriela","Anderson"], $position:2}}}
+)
+
+db.lista.updateOne(
+    {_id:1},
+    {$push:{vetor_num:{$each:[100,200],$slice:-5}}}
+)
+
+db.lista.updateOne(
+    {_id:1},
+    {$push:{vetor_nome:{$each:["Zacarias","Andre","Bruno"], $sort:1}}}
+)
+
+db.lista.updateOne(
+    {_id:1},
+    {$unset:{vator_nome:1}}
+)
+
+db.clientes.updateMany(
+    {},
+    {$and:[
+        {$push:{emprestimo_tipo:{$each:[], $sort:1}}},
+        {$exists:emprestimo_tipo}
+    ]
+    }
+)

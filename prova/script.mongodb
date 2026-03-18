@@ -1,0 +1,73 @@
+db.professores.find(
+    {"escola.nome":{$regex:/tech$/i}}
+).count()
+
+
+// 2.	Você deve ter percebido que os professores de matriculas 2003 e 2005 não tem a informação da quantidade de professores no campo academia, certo? Adicione, nos dois documentos de uma vez, a quantidade de professores da Tech (verifique em outros documentos o número correto). (1,5)
+// Abaixo você deve colocar a query utilizada para a atualização, incluindo a resposta dessa query de atualização dos documentos.
+
+db.professores.updateMany(
+    {matricula:{$in:[2003,2005]}},
+    {$set:{"escola.qnt_professores":7}}
+)
+
+// 3.	Existe um campo onde informa se o professor é professor gestor ou não. Esse campo deve ser um campo com valor lógico. Pesquise quantos documentos tem esse campo com o valor do tipo correto. Se tiver algum que não seja lógico, atualize o mesmo. 
+
+db.professores.find(
+    {professor_gestor:{$type:"bool"}}
+)
+
+db.professores.updateMany(
+    {professor_gestor:{$not:{$type:"bool"}}},
+    {$set:{professor_gestor:false}}
+)
+
+db.professores.updateOne(
+    {nome:"Marcelo",sobrenome:"Grilo"},
+    {$set:{turmas:["1o tech", "2o tech"]}}
+)
+db.professores.updateOne(
+    {nome:"Nisflei",sobrenome:"Galone"},
+    {$set:{turmas:["1o tech", "2o tech", "3o tech"]}}
+)
+db.professores.updateOne(
+    {nome:"Carlos",sobrenome:"Santi"},
+    {$set:{turmas:["1o tech", "2o tech", "3o tech"]}}
+)
+
+// 5.	Quem são os professores que tem menos do que 40 anos e são professores gestores? (1,0)
+// Insira abaixo a query utilizada e o resultado da query (se não couber em um print, faça com que a query fique visível).
+
+db.professores.find(
+    {$and:[
+        {idade:{$lt:40}},
+        {professor_gestor:true}
+    ]}
+)
+
+// 6.	Quantos professores dão aulas para, pelo menos uma turma do “tech”: (1,0)
+// Insira abaixo a query e o retorno dessa query.
+
+db.professores.find(
+    {turmas:{$elemMatch:{$regex:/tech$/i}}}
+)
+
+// 7.	Quem são os professores que dão aula para pelo menos 3 turmas e recebem menos do que R$5000,00?: (1,5)
+
+db.professores.find(
+    {$and:[
+        {turmas:{$exists:true}},
+        {$expr:{$gte:[{$size:"$turmas"},3]}},
+        {salario:{$lt:5000}}
+    ]}
+)
+
+// 8.	A escola acabou de modificar uma regra para escolher professor gestor. Quem tem mais de 40 anos e receber mais do que R$4000,00 deve ser professor gestor, obrigatoriamente. Atualize essa regra no sistema atualizando o campo professor_gestor: 
+
+db.professores.updateMany(
+    {$and:[
+        {idade:{$gt:40}},
+        {salario:{$gt:4000}}
+    ]},
+    {$set:{professor_gestor:true}}
+)

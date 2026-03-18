@@ -1,0 +1,27 @@
+db.clientes.updateMany(
+    {cartao_credito:{$exists:true}},
+    {$inc:{saldo:100}}
+)
+
+db.clientes.updateMany(
+    {idade:{$gt:60}},
+    {$mul:{saldo:1.1}}
+)
+
+db.clientes.updateMany(
+    {},
+    {$rename:{"endereço":"endereco"}}
+)
+
+db.clientes.updateMany(
+    {nome:"Lamelo"},
+    {$pull:{emprestimo_tipo:"Consignado"}}
+)
+
+db.clientes.updateMany(
+    {nome:"Jucelio"},
+    {$push:{emprestimo_tipo:"Pessoal"}}
+)
+
+
+
