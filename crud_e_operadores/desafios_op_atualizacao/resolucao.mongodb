@@ -1,0 +1,130 @@
+// 1) O banco vai aumentar o limite do cartão de crédito de alguns clientes em 65%, mas
+// como decidir esses clientes? Serão todos os clientes que tenham mais do que
+// 10.000,00 de saldo, que tenham pelo menos 2 anos de conta no banco e que tenham
+// cartão de crédito (claro), todos esses devem ter o reajuste no limite do cartão.
+
+db.clientes.updateMany(
+    {$and:[
+        {saldo:{$gt:10000}},
+        {"cartao_credito":{$exists:true}},
+        {data_abertura:{$lte: new Date(2024,2,22)}}
+    ]},
+    {$mul:{"cartao_credito.saldo":1.65}}
+)
+
+// 2) Os clientes com saldo acima de R$ 10.000,00, não terão mais acesso ao empréstimo
+// "FGTS“, mas obrigatoriamente devem ter o empréstimo “Pessoal”
+
+db.clientes.updateMany(
+    {$and:[
+        {saldo:{$gt:10000}},
+        {"emprestimo_tipo":{$exists:true}}
+    ]},
+    {
+        $pull:{"emprestimo_tipo":"FGTS"},
+        $addToSet:{"emprestimo_tipo":"Pessoal"}
+    }
+)
+
+// Não posso fazer desse jeito pois o mongo não aceita em uma mesma query operadores de adição e remoção
+
+db.clientes.updateMany(
+    {$and:[
+        {saldo:{$gt:10000}},
+        {"emprestimo_tipo":{$exists:true}}
+    ]},
+    {
+        $pull:{"emprestimo_tipo":"FGTS"},
+    }
+)
+
+db.clientes.updateMany(
+    {$and:[
+        {saldo:{$gt:10000}},
+        {"emprestimo_tipo":{$exists:true}}
+    ]},
+    {
+        $addToSet:{"emprestimo_tipo":"Pessoal"}
+    }
+)
+
+// 3)Todos os clientes que tem emprestimo_disponivel com valor verdadeiro devem
+// possuir, no mínimo, acesso ao empréstimo FGTS. Isso já acontece? Corrija sem permitir
+// duplicada de empréstimos.
+// Depois que fizer essa alteração, verifique quantos clientes possuem o empréstimo
+// por Garantia e são do gerente que tenha o nome Manolo, independente do
+// sobrenome.
+
+db.clientes.updateMany(
+    {
+        emprestimo_disponivel:true,
+        emprestimo_tipo:{$exists:true}
+    },
+    {$addToSet:{emprestimo_tipo:"FGTS"}}
+)
+
+db.clientes.find(
+    {$and:[
+        {emprestimo_tipo:{$regex:/Garantia/i}},
+        {gerente:{$regex:/Manolo/i}}
+    ]}
+).count()
+
+// 4)Mostre os campos, emprestimo_disponivel, emprestimo_tipo e nome de todos os
+// clientes por ordem alfabética.
+
+db.clientes.find(
+    {},
+    {emprestimo_disponivel:1,emprestimo_tipo:1,nome:1,_id:0}
+).sort({nome:1})
+
+// 5) O Jucélio mudou de endereço, para uma nova cidade e estado (Teresópolis, RJ).
+// Atualize não apenas esses campos, mas também a agencia (verifique a agencia de
+// quem é de RJ) desse cliente. Na mesma query, insira um novo campo
+// data_ultima_atualizacao com a data e hora atuais.
+
+db.clientes.updateOne(
+    {nome:"Jucelio"},
+    {$set:{
+        "endereco.cidade":"Teresópolis",
+        "endereco.estado":"RJ",
+        agencia:"0002",
+        data_ultima_atualizacao:new Date()
+    }}
+)
+
+// Atualize o saldo de "Lamelo Antony" para ser igual ao saldo do cliente com o menor
+// saldo. Use uma consulta para encontrar o cliente com o menor saldo e, em seguida,
+// atualize o saldo de "Lamelo Antony" com esse valor.
+// Como fazer uma query para saber o cliente com menor saldo?
+
+db.clientes.find().sort({saldo:1})
+
+db.clientes.updateOne(
+    {
+        nome:"Lamelo",
+        sobrenome: "Antony"
+    },
+    {$set:{saldo:50}}
+)
+
+// Para clientes que possuem mais de 3 tipos de empréstimos, remover o empréstimo de
+// menor prioridade
+// • Considere a ordem de prioridade: Consignado < FGTS < Garantia < Pessoal.
+// • Percebeu a ordem de prioridade?
+
+db.clientes.updateMany(
+    {$and:[
+        {emprestimo_tipo:{$exists:true}},
+        {$expr:{$gt:[{$size:"$emprestimo_tipo"},3]}}
+    ]},
+    {$push:{"emprestimo_tipo":{$each:[], $sort:-1}}}
+)
+
+db.clientes.updateMany(
+    {$and:[
+        {emprestimo_tipo:{$exists:true}},
+        {$expr:{$gt:[{$size:"$emprestimo_tipo"},3]}}
+    ]},
+    {$pop:{"emprestimo_tipo":1}}
+)
